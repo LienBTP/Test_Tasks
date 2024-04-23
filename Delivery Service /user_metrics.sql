@@ -2,19 +2,23 @@ WITH
 t1 AS (SELECT order_id,sum(price) AS order_price
        FROM
            (SELECT order_id, unnest(product_ids) AS product_id FROM orders) o
+       -- Добавление таблицы products с данными о товарах (id, name, price)
        JOIN products p ON p.product_id = o.product_id
        GROUP BY order_id),
 t2 AS (SELECT user_id, u.order_id, array_length(product_ids, 1) AS order_size
        FROM
            (SELECT order_id, user_id
             FROM user_actions
+         -- Исключение отмененных заказов из таблицы с действиями пользователей (user_actions)
             WHERE order_id not in (SELECT order_id FROM user_actions WHERE action = 'cancel_order')) AS u
+       -- Объединение таблицы user_actions с данными о заказах (orders)
        JOIN orders o ON u.order_id = o.order_id),
 t3 AS (SELECT user_id, t1.order_id, order_price, order_size
        FROM t1
        JOIN t2 ON t1.order_id = t2.order_id)
 
 SELECT user_id,
+       -- Расчет метрик
        count(order_id) AS orders_count,
        round(avg(order_size), 2) AS avg_order_size,
        sum(order_price) AS sum_order_value,
