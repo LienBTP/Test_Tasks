@@ -11,3 +11,6 @@
 - Объединение таблицы user_actions с данными о заказах (orders)
 - Добавление таблицы products с данными о товарах (id, name, price)
 - Расчет метрик
+
+Результат:
+http://redash.public.karpov.courses/embed/query/50940/visualization/77972?api_key=mPz9fpNltgD1hHQWpVnuyXqG1eA3K8LIgMkQF9O8&
